@@ -1,0 +1,29 @@
+{
+  "name": "telnet-openvpn",
+  "version": "0.0.1",
+  "description": "Telnet to openvpn management port",
+  "main": "lib/index.js",
+  "scripts": {},
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/smithp1992/telnet-openvpn.git"
+  },
+  "keywords": [
+	"Telnet",
+	"OpenVPN"
+  ],
+  "author": {
+	"name": "Philip Smith",
+	"email": "smithp1992@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+	"url": "https://github.com/smithp1992/telnet-openvpn/issues"
+  },
+  "homepage": "https://github.com/smithp1992/telnet-openvpn#readme",
+  "dependencies": {
+	"bluebird": "^3.4.7",
+	"lodash": "^4.17.4",
+	"telnet-client": "^0.13.0"
+  }
+}
