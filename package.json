@@ -1,29 +1,42 @@
 {
   "name": "telnet-openvpn",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Telnet to openvpn management port",
-  "main": "lib/index.js",
-  "scripts": {},
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "babel src --out-dir dist",
+	"prepublish": "npm run build"
+  },
   "repository": {
-	"type": "git",
-	"url": "https://github.com/smithp1992/telnet-openvpn.git"
+    "type": "git",
+    "url": "https://github.com/smithp1992/telnet-openvpn.git"
   },
   "keywords": [
-	"Telnet",
-	"OpenVPN"
+    "Telnet",
+    "OpenVPN"
   ],
   "author": {
-	"name": "Philip Smith",
-	"email": "smithp1992@gmail.com"
+    "name": "Philip Smith",
+    "email": "smithp1992@gmail.com"
   },
   "license": "MIT",
   "bugs": {
-	"url": "https://github.com/smithp1992/telnet-openvpn/issues"
+    "url": "https://github.com/smithp1992/telnet-openvpn/issues"
   },
   "homepage": "https://github.com/smithp1992/telnet-openvpn#readme",
   "dependencies": {
-	"bluebird": "^3.4.7",
-	"lodash": "^4.17.4",
-	"telnet-client": "^0.13.0"
+    "bluebird": "^3.4.7",
+    "lodash": "^4.17.4",
+    "q": "^1.4.1",
+    "telnet-client": "^0.13.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-preset-es2015": "^6.22.0"
+  },
+  "babel": {
+	"presets": [
+	  "es2015"
+	]
   }
 }

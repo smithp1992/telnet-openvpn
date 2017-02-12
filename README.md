@@ -31,9 +31,11 @@ vpn.connect(options);
   
 vpn.on('connect', function() {
     vpn.exec('state on all').then(function() {
-        vpn.authorize(auth).then(function(data) {
-            // User is now connected
-        });
+        vpn.exec('hold release').then(function() {
+            vpn.authorize(auth).then(function(data) {
+                // User is now connected
+            });
+        })
     })
 });
   
@@ -77,10 +79,12 @@ let auth = {
   
 vpn.connect(options);
   
-vpn.on('connect', function() {
+vpn.on('connect', () => {
     vpn.exec('state on all').then(() => {
-        vpn.authorize(auth).then((data) => {
-            // User is now connected
+        vpn.exec('hold release').then(() => {
+            vpn.authorize(auth).then((data) => {
+                // User is now connected
+            });
         });
     })
 });

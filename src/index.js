@@ -1,14 +1,14 @@
 /**
  * Created by Philip Smith on 2/5/2017.
  */
-const Promise = require('bluebird');
-const Telnet = require('telnet-client');
-const events = require('events');
-const _ = require('lodash');
+import Telnet from 'telnet-client';
+import EventEmitter from 'events';
+import _ from 'lodash';
+import q from 'q';
 
 let connection = false;
 
-module.exports = class TelnetVPN extends events.EventEmitter {
+export default class TelnetVPN extends EventEmitter {
 	constructor() {
 		super();
 		let vpn = this;
@@ -29,8 +29,8 @@ module.exports = class TelnetVPN extends events.EventEmitter {
 	}
 
 	// Connect To VPN through Telnet
-	connect(options) {
-		return new Promise(function (resolve) {
+	connect(options) { // -> Promise
+		return new q.Promise(function(resolve, reject, notify) {
 			let params = _.defaults(options, {
 				host: '127.0.0.1',
 				port: 1337,
@@ -43,37 +43,44 @@ module.exports = class TelnetVPN extends events.EventEmitter {
 	}
 
 	// Authenticate user credentials
-	authorize(auth) {
+	authorize(auth) { // -> Promise
 		let vpn = this;
-		return vpn.exec('username "Auth" ' + auth.username)
-		.then(function () {
-			vpn.exec('password "Auth" ' + auth.password);
+		return vpn.exec('username "Auth" ' + auth.username).then(function () {
+			return vpn.exec('password "Auth" ' + auth.password);
 		});
 	}
 
 	// Disconnects from stream. Some data may still be sent
-	disconnect() {
-		if (connection) {
-			return this.exec('signal SIGTERM');
-		}
-		return false;
+	disconnect() { // -> Promise
+		return new q.Promise(function(resolve, reject, notify) {
+			if (connection) {
+				resolve(this.exec('signal SIGTERM'));
+			}
+			else {
+				reject(new Error("Telnet connection undefined"));
+			}
+		});
 	}
 
 	// Removes all instances of connection input/output
-	destroy() {
-		if (connection) {
-			connection.destroy();
-		}
-		return false;
+	destroy() { // -> Promise
+		return new q.Promise(function (resolve, reject, notify) {
+			if (connection) {
+				resolve(connection.destroy());
+			}
+			else {
+				reject(new Error("Telnet connection undefined"));
+			}
+		});
 	}
 
 	// Telnet OpenVPN Execution Commands
-	exec(param) {
+	exec(param) { // -> Promise
 		let vpn = this;
-		return new Promise(function (resolve, reject) {
+		return new q.Promise(function (resolve, reject, notify) {
 			if (connection) {
 				connection.send(param, function (error, response) {
-					if (error) reject(error);
+					if (error) defer.reject(error);
 					resolve(vpn._emitData(response.toString()));
 				});
 			}
