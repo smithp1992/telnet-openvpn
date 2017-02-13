@@ -16,9 +16,9 @@ var vpn = new TelnetVPN();
   
 var options = {
     host: '127.0.0.1',
-    port: '1337',
+    port: 1337,
     ors: '\r\n',
-    waitfor: '\n'
+    sendTimeout: 3000
 };
   
 var auth = {
@@ -66,9 +66,9 @@ let vpn = new TelnetVPN();
   
 let options = {
     host: '127.0.0.1',
-    port: '1337',
+    port: 1337,
     ors: '\r\n',
-    waitfor: '\n'
+    sendTimeout: 3000
 };
   
 let auth = {

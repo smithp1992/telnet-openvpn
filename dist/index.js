@@ -74,7 +74,7 @@ var TelnetVPN = function (_EventEmitter) {
 					port: 1337,
 					negotiationMandatory: true,
 					ors: '\r\n',
-					waitfor: '\n'
+					sendTimeout: 3000
 				});
 				resolve(connection.connect(params));
 			});
@@ -87,8 +87,14 @@ var TelnetVPN = function (_EventEmitter) {
 		value: function authorize(auth) {
 			// -> Promise
 			var vpn = this;
-			return vpn.exec('username "Auth" ' + auth.username).then(function () {
-				return vpn.exec('password "Auth" ' + auth.password);
+			return new _q2.default.Promise(function (resolve, reject, notify) {
+				vpn.exec('username "Auth" ' + auth.username).then(function () {
+					vpn.exec('password "Auth" ' + auth.password).then(function () {
+						resolve();
+					});
+				}).catch(function (error) {
+					reject(error);
+				});
 			});
 		}
 
@@ -97,10 +103,12 @@ var TelnetVPN = function (_EventEmitter) {
 	}, {
 		key: 'disconnect',
 		value: function disconnect() {
+			var _this2 = this;
+
 			// -> Promise
 			return new _q2.default.Promise(function (resolve, reject, notify) {
 				if (connection) {
-					resolve(this.exec('signal SIGTERM'));
+					resolve(_this2.exec('signal SIGTERM'));
 				} else {
 					reject(new Error("Telnet connection undefined"));
 				}
@@ -132,7 +140,7 @@ var TelnetVPN = function (_EventEmitter) {
 			return new _q2.default.Promise(function (resolve, reject, notify) {
 				if (connection) {
 					connection.send(param, function (error, response) {
-						if (error) defer.reject(error);
+						if (error) reject(error);
 						resolve(vpn._emitData(response.toString()));
 					});
 				} else {
