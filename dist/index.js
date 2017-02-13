@@ -68,16 +68,16 @@ var TelnetVPN = function (_EventEmitter) {
 		key: 'connect',
 		value: function connect(options) {
 			// -> Promise
-			var defer = _q2.default.defer();
-			var params = _lodash2.default.defaults(options, {
-				host: '127.0.0.1',
-				port: 1337,
-				negotiationMandatory: true,
-				ors: '\r\n',
-				waitfor: '\n'
+			return new _q2.default.Promise(function (resolve, reject, notify) {
+				var params = _lodash2.default.defaults(options, {
+					host: '127.0.0.1',
+					port: 1337,
+					negotiationMandatory: true,
+					ors: '\r\n',
+					waitfor: '\n'
+				});
+				resolve(connection.connect(params));
 			});
-			defer.resolve(connection.connect(params));
-			return defer.promise;
 		}
 
 		// Authenticate user credentials
@@ -98,13 +98,13 @@ var TelnetVPN = function (_EventEmitter) {
 		key: 'disconnect',
 		value: function disconnect() {
 			// -> Promise
-			var defer = _q2.default.defer();
-			if (connection) {
-				defer.resolve(this.exec('signal SIGTERM'));
-			} else {
-				defer.reject(new Error("Telnet connection undefined"));
-			}
-			return defer.promise;
+			return new _q2.default.Promise(function (resolve, reject, notify) {
+				if (connection) {
+					resolve(this.exec('signal SIGTERM'));
+				} else {
+					reject(new Error("Telnet connection undefined"));
+				}
+			});
 		}
 
 		// Removes all instances of connection input/output
@@ -113,13 +113,13 @@ var TelnetVPN = function (_EventEmitter) {
 		key: 'destroy',
 		value: function destroy() {
 			// -> Promise
-			var defer = _q2.default.defer();
-			if (connection) {
-				defer.resolve(connection.destroy());
-			} else {
-				defer.reject(new Error("Telnet connection undefined"));
-			}
-			return defer.promise;
+			return new _q2.default.Promise(function (resolve, reject, notify) {
+				if (connection) {
+					resolve(connection.destroy());
+				} else {
+					reject(new Error("Telnet connection undefined"));
+				}
+			});
 		}
 
 		// Telnet OpenVPN Execution Commands
@@ -129,16 +129,16 @@ var TelnetVPN = function (_EventEmitter) {
 		value: function exec(param) {
 			// -> Promise
 			var vpn = this;
-			var defer = _q2.default.defer();
-			if (connection) {
-				connection.send(param, function (error, response) {
-					if (error) defer.reject(error);
-					defer.resolve(vpn._emitData(response.toString()));
-				});
-			} else {
-				defer.reject(vpn.emit('error', 'Error: Connection Not Established'));
-			}
-			return defer.promise;
+			return new _q2.default.Promise(function (resolve, reject, notify) {
+				if (connection) {
+					connection.send(param, function (error, response) {
+						if (error) defer.reject(error);
+						resolve(vpn._emitData(response.toString()));
+					});
+				} else {
+					reject(vpn.emit('error', 'Error: Connection Not Established'));
+				}
+			});
 		}
 
 		// Emit data from provided response string
