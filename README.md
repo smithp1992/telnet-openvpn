@@ -17,6 +17,7 @@ var vpn = new TelnetVPN();
 var options = {
     host: '127.0.0.1',
     port: 1337,
+    negotiationMandatory: true,
     ors: '\r\n',
     sendTimeout: 3000
 };
@@ -67,6 +68,7 @@ let vpn = new TelnetVPN();
 let options = {
     host: '127.0.0.1',
     port: 1337,
+    negotiationMandatory: true,
     ors: '\r\n',
     sendTimeout: 3000
 };
@@ -114,10 +116,11 @@ Connects to the management port specified in the .ovpn file.
 More options can be found in the [telnet-client](https://github.com/mkozjak/node-telnet-client#connectionconnectoptions---promise) docs.  
   
 options:  
-* host: Management IP address specified under "management" in .ovpn file.  
-* port: Management port specified under "management" in .ovpn file.  
-* ors: Output record separator. Used to execute commands from telnet console.  
-* waitfor: Waits for input return character '\n'.  
+* host: Management IP address specified under "management" in .ovpn file (default: '127.0.0.1').  
+* port: Management port specified under "management" in .ovpn file (default: 1337).  
+* negotiationMandatory: Enable to disable telnet negotiations (default: true).  
+* ors: Output record separator. Used to execute commands from telnet console (default: '\r\n').  
+* sendTimeout: Waits for input return character (default: 3000).  
   
 ### vpn.authorize(options) -> Promise  
 After user connects, vpn.authorize(auth) must be called if .ovpn file specifies auth-user-pass.  
