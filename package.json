@@ -1,6 +1,6 @@
 {
   "name": "telnet-openvpn",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Connect to OpenVPN management port through telnet.",
   "main": "dist/index.js",
   "scripts": {
