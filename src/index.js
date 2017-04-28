@@ -30,7 +30,7 @@ export default class TelnetVPN extends EventEmitter {
 
     // Connect To VPN through Telnet
     connect(options) { // -> Promise
-        return new q.Promise((resolve, reject, notify) => {
+        return q.Promise((resolve, reject, notify) => {
             let params = _.defaults(options, {
                 host: '127.0.0.1',
                 port: 1337,
@@ -45,7 +45,7 @@ export default class TelnetVPN extends EventEmitter {
     // Authenticate user credentials
     authorize(auth) { // -> Promise
         let vpn = this;
-        return new q.Promise((resolve, reject, notify) => {
+        return q.Promise((resolve, reject, notify) => {
             vpn.exec('username "Auth" ' + auth.username).then(() => {
                 vpn.exec('password "Auth" ' + auth.password).then(() => {
                     resolve();
@@ -58,7 +58,7 @@ export default class TelnetVPN extends EventEmitter {
 
     // Disconnects from stream. Some data may still be sent
     disconnect() { // -> Promise
-        return new q.Promise((resolve, reject, notify) => {
+        return q.Promise((resolve, reject, notify) => {
             if (connection) {
                 resolve(this.exec('signal SIGTERM'));
             }
@@ -70,9 +70,21 @@ export default class TelnetVPN extends EventEmitter {
 
     // Removes all instances of connection input/output
     destroy() { // -> Promise
-        return new q.Promise((resolve, reject, notify) => {
+        return q.Promise((resolve, reject, notify) => {
             if (connection) {
                 resolve(connection.destroy());
+            }
+            else {
+                reject(new Error("Telnet connection undefined"));
+            }
+        });
+    }
+
+    // Exit telnet terminal (Only closes telnet terminal)
+    end() { // -> Promise
+        return q.Promise((resolve, reject, notify) => {
+            if(connection) {
+                resolve(connection.end());
             }
             else {
                 reject(new Error("Telnet connection undefined"));
@@ -83,7 +95,7 @@ export default class TelnetVPN extends EventEmitter {
     // Telnet OpenVPN Execution Commands
     exec(param) { // -> Promise
         let vpn = this;
-        return new q.Promise((resolve, reject, notify) => {
+        return q.Promise((resolve, reject, notify) => {
             if (connection) {
                 connection.send(param, (error, response) => {
                     if (error) reject(error);

@@ -1,7 +1,7 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -36,152 +36,167 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var connection = false;
 
 var TelnetVPN = function (_EventEmitter) {
-	_inherits(TelnetVPN, _EventEmitter);
+    _inherits(TelnetVPN, _EventEmitter);
 
-	function TelnetVPN() {
-		_classCallCheck(this, TelnetVPN);
+    function TelnetVPN() {
+        _classCallCheck(this, TelnetVPN);
 
-		var _this = _possibleConstructorReturn(this, (TelnetVPN.__proto__ || Object.getPrototypeOf(TelnetVPN)).call(this));
+        var _this = _possibleConstructorReturn(this, (TelnetVPN.__proto__ || Object.getPrototypeOf(TelnetVPN)).call(this));
 
-		var vpn = _this;
-		connection = new _telnetClient2.default();
-		connection.on('connect', function () {
-			vpn.emit('connect');
-		});
-		connection.on('error', function (error) {
-			vpn.disconnect();
-			vpn.emit('error', error);
-		});
-		connection.on('end', function () {
-			vpn.emit('end');
-		});
-		connection.on('close', function () {
-			vpn.emit('close');
-		});
-		return _this;
-	}
+        var vpn = _this;
+        connection = new _telnetClient2.default();
+        connection.on('connect', function () {
+            vpn.emit('connect');
+        });
+        connection.on('error', function (error) {
+            vpn.disconnect();
+            vpn.emit('error', error);
+        });
+        connection.on('end', function () {
+            vpn.emit('end');
+        });
+        connection.on('close', function () {
+            vpn.emit('close');
+        });
+        return _this;
+    }
 
-	// Connect To VPN through Telnet
+    // Connect To VPN through Telnet
 
 
-	_createClass(TelnetVPN, [{
-		key: 'connect',
-		value: function connect(options) {
-			// -> Promise
-			return new _q2.default.Promise(function (resolve, reject, notify) {
-				var params = _lodash2.default.defaults(options, {
-					host: '127.0.0.1',
-					port: 1337,
-					negotiationMandatory: true,
-					ors: '\r\n',
-					sendTimeout: 3000
-				});
-				resolve(connection.connect(params));
-			});
-		}
+    _createClass(TelnetVPN, [{
+        key: 'connect',
+        value: function connect(options) {
+            // -> Promise
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                var params = _lodash2.default.defaults(options, {
+                    host: '127.0.0.1',
+                    port: 1337,
+                    negotiationMandatory: true,
+                    ors: '\r\n',
+                    sendTimeout: 3000
+                });
+                resolve(connection.connect(params));
+            });
+        }
 
-		// Authenticate user credentials
+        // Authenticate user credentials
 
-	}, {
-		key: 'authorize',
-		value: function authorize(auth) {
-			// -> Promise
-			var vpn = this;
-			return new _q2.default.Promise(function (resolve, reject, notify) {
-				vpn.exec('username "Auth" ' + auth.username).then(function () {
-					vpn.exec('password "Auth" ' + auth.password).then(function () {
-						resolve();
-					});
-				}).catch(function (error) {
-					reject(error);
-				});
-			});
-		}
+    }, {
+        key: 'authorize',
+        value: function authorize(auth) {
+            // -> Promise
+            var vpn = this;
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                vpn.exec('username "Auth" ' + auth.username).then(function () {
+                    vpn.exec('password "Auth" ' + auth.password).then(function () {
+                        resolve();
+                    });
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });
+        }
 
-		// Disconnects from stream. Some data may still be sent
+        // Disconnects from stream. Some data may still be sent
 
-	}, {
-		key: 'disconnect',
-		value: function disconnect() {
-			var _this2 = this;
+    }, {
+        key: 'disconnect',
+        value: function disconnect() {
+            var _this2 = this;
 
-			// -> Promise
-			return new _q2.default.Promise(function (resolve, reject, notify) {
-				if (connection) {
-					resolve(_this2.exec('signal SIGTERM'));
-				} else {
-					reject(new Error("Telnet connection undefined"));
-				}
-			});
-		}
+            // -> Promise
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                if (connection) {
+                    resolve(_this2.exec('signal SIGTERM'));
+                } else {
+                    reject(new Error("Telnet connection undefined"));
+                }
+            });
+        }
 
-		// Removes all instances of connection input/output
+        // Removes all instances of connection input/output
 
-	}, {
-		key: 'destroy',
-		value: function destroy() {
-			// -> Promise
-			return new _q2.default.Promise(function (resolve, reject, notify) {
-				if (connection) {
-					resolve(connection.destroy());
-				} else {
-					reject(new Error("Telnet connection undefined"));
-				}
-			});
-		}
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            // -> Promise
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                if (connection) {
+                    resolve(connection.destroy());
+                } else {
+                    reject(new Error("Telnet connection undefined"));
+                }
+            });
+        }
 
-		// Telnet OpenVPN Execution Commands
+        // Exit telnet terminal (Only closes telnet terminal)
 
-	}, {
-		key: 'exec',
-		value: function exec(param) {
-			// -> Promise
-			var vpn = this;
-			return new _q2.default.Promise(function (resolve, reject, notify) {
-				if (connection) {
-					connection.send(param, function (error, response) {
-						if (error) reject(error);
-						resolve(vpn._emitData(response.toString()));
-					});
-				} else {
-					reject(vpn.emit('error', 'Error: Connection Not Established'));
-				}
-			});
-		}
+    }, {
+        key: 'end',
+        value: function end() {
+            // -> Promise
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                if (connection) {
+                    resolve(connection.end());
+                } else {
+                    reject(new Error("Telnet connection undefined"));
+                }
+            });
+        }
 
-		// Emit data from provided response string
+        // Telnet OpenVPN Execution Commands
 
-	}, {
-		key: '_emitData',
-		value: function _emitData(response) {
-			var vpn = this;
-			_lodash2.default.each(response.split("\n"), function (response) {
-				if (response) {
-					if (response.substr(1, 5) === 'STATE') {
-						vpn.emit('data', { state: response.substr(7).split(",") });
-					} else if (response.substr(1, 4) === 'HOLD') {
-						vpn.emit('data', { hold: true });
-					} else if (response.substr(0, 7) === 'SUCCESS') {
-						vpn.emit('data', { success: response.substr(8) });
-					} else if (response.substr(0, 5) === 'FATAL' || response && response.substr(0, 5) === 'ERROR') {
-						vpn.emit('error', response);
-					} else if (response.substr(1, 9) === 'BYTECOUNT') {
-						vpn.emit('data', { bytecount: response.substr(11).split(",") });
-					} else if (response.substr(0, 7) === 'SUCCESS') {
-						if (response.substr(9, 3) === 'pid') {
-							vpn.emit('data', { pid: response.substr(13).trim() });
-						}
-					} else if (response.substr(1, 3) === 'LOG') {
-						vpn.emit('log', response.substr(4).split(',')[2]);
-					} else {
-						vpn.emit('log', response);
-					}
-				}
-			});
-		}
-	}]);
+    }, {
+        key: 'exec',
+        value: function exec(param) {
+            // -> Promise
+            var vpn = this;
+            return _q2.default.Promise(function (resolve, reject, notify) {
+                if (connection) {
+                    connection.send(param, function (error, response) {
+                        if (error) reject(error);
+                        resolve(vpn._emitData(response.toString()));
+                    });
+                } else {
+                    reject(vpn.emit('error', 'Error: Connection Not Established'));
+                }
+            });
+        }
 
-	return TelnetVPN;
+        // Emit data from provided response string
+
+    }, {
+        key: '_emitData',
+        value: function _emitData(response) {
+            var vpn = this;
+            _lodash2.default.each(response.split("\n"), function (response) {
+                if (response) {
+                    if (response.substr(1, 5) === 'STATE') {
+                        vpn.emit('data', { state: response.substr(7).split(",") });
+                    } else if (response.substr(1, 4) === 'HOLD') {
+                        vpn.emit('data', { hold: true });
+                    } else if (response.substr(0, 7) === 'SUCCESS') {
+                        if (response.substr(9, 3) === 'pid') {
+                            vpn.emit('data', { pid: response.substr(13).trim() });
+                        } else {
+                            vpn.emit('data', { success: response.substr(8) });
+                        }
+                    } else if (response.substr(0, 5) === 'FATAL' || response && response.substr(0, 5) === 'ERROR') {
+                        vpn.emit('error', response);
+                    } else if (response.substr(1, 9) === 'BYTECOUNT') {
+                        vpn.emit('data', { bytecount: response.substr(11).split(",") });
+                    } else if (response.substr(1, 3) === 'LOG') {
+                        vpn.emit('log', response.substr(4).split(',')[2]);
+                    } else {
+                        vpn.emit('log', response);
+                    }
+                }
+            });
+        }
+    }]);
+
+    return TelnetVPN;
 }(_events2.default);
 
 exports.default = TelnetVPN;

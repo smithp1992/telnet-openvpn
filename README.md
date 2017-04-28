@@ -31,13 +31,18 @@ var auth = {
 vpn.connect(options);
   
 vpn.on('connect', function() {
-    vpn.exec('state on all').then(function() {
-        vpn.exec('hold release').then(function() {
-            vpn.authorize(auth).then(function(data) {
-                // User is now connected
+    vpn.exec('log on all').then(function() {
+        return vpn.exec('state on').then(function() {
+            return vpn.exec('hold release').then(function() {
+                return vpn.authorize(auth);
             });
-        })
-    })
+        });
+    }).catch(function(error) {
+        console.error(error);
+    }).then(function() {
+        // User is now connected
+        vpn.end(); // (Optional) Close telnet session
+    });
 });
   
 vpn.on('log', function(result) {
@@ -82,13 +87,18 @@ let auth = {
 vpn.connect(options);
   
 vpn.on('connect', () => {
-    vpn.exec('state on all').then(() => {
-        vpn.exec('hold release').then(() => {
-            vpn.authorize(auth).then((data) => {
-                // User is now connected
+    vpn.exec('log on all').then(() => {
+        return vpn.exec('state on').then(() => {
+            return vpn.exec('hold release').then(() => {
+                return vpn.authorize(auth);
             });
         });
-    })
+    }).catch((error) => {
+        console.error(error);
+    }).then(() => {
+        // User is now connected
+        vpn.end(); // (Optional) Close telnet session
+    });
 });
   
 vpn.on('log', (result) => {
@@ -152,6 +162,10 @@ Ends telnet session and triggers the 'end' event emitter.
   
 ### vpn.destroy() -> Promise  
 Removes all instances of telnet console socket connection. Used for 'error' event emitter.
+  
+### vpn.end() -> Promise  
+Closes telnet session but does not kill all telnet instances like vpn.destroy(). 
+It is possible the server may send some data.  
   
 ## Important .ovpn file information:  
 ```bash
