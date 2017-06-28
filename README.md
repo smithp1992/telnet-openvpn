@@ -17,9 +17,8 @@ var vpn = new TelnetVPN();
 var options = {
     host: '127.0.0.1',
     port: 1337,
-    negotiationMandatory: true,
     ors: '\r\n',
-    sendTimeout: 3000
+    sendTimeout: 2000
 };
   
 var auth = {
@@ -39,9 +38,6 @@ vpn.on('connect', function() {
         });
     }).catch(function(error) {
         console.error(error);
-    }).then(function() {
-        // User is now connected
-        vpn.end(); // (Optional) Close telnet session
     });
 });
   
@@ -73,9 +69,8 @@ let vpn = new TelnetVPN();
 let options = {
     host: '127.0.0.1',
     port: 1337,
-    negotiationMandatory: true,
     ors: '\r\n',
-    sendTimeout: 3000
+    sendTimeout: 2000
 };
   
 let auth = {
@@ -95,9 +90,6 @@ vpn.on('connect', () => {
         });
     }).catch((error) => {
         console.error(error);
-    }).then(() => {
-        // User is now connected
-        vpn.end(); // (Optional) Close telnet session
     });
 });
   
@@ -107,11 +99,12 @@ vpn.on('log', (result) => {
   
 vpn.on('error', (error) => {
     console.log(error);
-    vpn.destroy();
+    vpn.disconnect();
 });
   
 vpn.on('end', (result) => {
     console.log(result);
+    vpn.destroy();
 });
   
 vpn.on('data', (result) => {
@@ -155,6 +148,7 @@ events:
     * hold: Telnet console waiting for user commands.  
     * success: Telnet data successfully obtained.  
     * bytecount: Telnet byte count.  
+    * password: Password information sent through telnet console.  
     * pid: Process id of session.  
   
 ### vpn.disconnect() -> Promise  
