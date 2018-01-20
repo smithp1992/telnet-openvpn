@@ -1,5 +1,5 @@
 /**
- * Forked from Philip Smith on 2/5/2017.
+ * Philip Smith
  * Original repo at
  * https://github.com/smithp1992/telnet-openvpn/
  */
@@ -71,7 +71,7 @@ export default class TelnetVPN extends EventEmitter {
         resolve(this.exec('signal SIGTERM'));
       }
       else {
-        reject(new Error("Telnet this.connection undefined"));
+        reject(new Error("Telnet connection undefined"));
       }
     });
   }
@@ -83,7 +83,7 @@ export default class TelnetVPN extends EventEmitter {
         resolve(this.connection.destroy());
       }
       else {
-        reject(new Error("Telnet this.connection undefined"));
+        reject(new Error("Telnet connection undefined"));
       }
     });
   }
@@ -95,7 +95,7 @@ export default class TelnetVPN extends EventEmitter {
         resolve(this.connection.end());
       }
       else {
-        reject(new Error("Telnet this.connection undefined"));
+        reject(new Error("Telnet connection undefined"));
       }
     });
   }
@@ -111,7 +111,7 @@ export default class TelnetVPN extends EventEmitter {
         });
       }
       else {
-        reject(vpn.emit('error', 'Error: this.connection Not Established'));
+        reject(vpn.emit('error', 'Error: connection Not Established'));
       }
     });
   }
