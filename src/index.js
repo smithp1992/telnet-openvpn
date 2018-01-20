@@ -1,37 +1,37 @@
 /**
- * Created by Philip Smith on 2/5/2017.
+ * Forked from Philip Smith on 2/5/2017.
+ * Original repo at
+ * https://github.com/smithp1992/telnet-openvpn/
  */
 import Telnet from 'telnet-client';
 import EventEmitter from 'events';
 import _ from 'lodash';
 import q from 'q';
 
-let connection = false;
-
 export default class TelnetVPN extends EventEmitter {
   constructor() {
     super();
     let vpn = this;
-    connection = new Telnet();
+    this.connection = new Telnet();
     // Telnet connected to management port
-    connection.on('connect', () => {
+    this.connection.on('connect', () => {
       vpn.emit('connect');
     });
     // Sort and emit vpn console log
-    connection.on('data', (response) => {
+    this.connection.on('data', (response) => {
       vpn._emitData(response.toString());
     });
     // Telnet error
-    connection.on('error', (error) => {
+    this.connection.on('error', (error) => {
       vpn.disconnect();
       vpn.emit('error', error);
     });
     // Ending telnet session
-    connection.on('end', () => {
+    this.connection.on('end', () => {
       vpn.emit('end');
     });
     // Closing telnet session
-    connection.on('close', () => {
+    this.connection.on('close', () => {
       vpn.emit('close');
     });
   }
@@ -46,7 +46,7 @@ export default class TelnetVPN extends EventEmitter {
         ors: '\r\n',
         sendTimeout: 3000
       });
-      resolve(connection.connect(params));
+      resolve(this.connection.connect(params));
     });
   }
   
@@ -67,23 +67,23 @@ export default class TelnetVPN extends EventEmitter {
   // Disconnects from stream. Some data may still be sent
   disconnect() { // -> Promise
     return q.Promise((resolve, reject, notify) => {
-      if (connection) {
+      if (this.connection) {
         resolve(this.exec('signal SIGTERM'));
       }
       else {
-        reject(new Error("Telnet connection undefined"));
+        reject(new Error("Telnet this.connection undefined"));
       }
     });
   }
   
-  // Removes all instances of connection input/output
+  // Removes all instances of this.connection input/output
   destroy() { // -> Promise
     return q.Promise((resolve, reject, notify) => {
-      if (connection) {
-        resolve(connection.destroy());
+      if (this.connection) {
+        resolve(this.connection.destroy());
       }
       else {
-        reject(new Error("Telnet connection undefined"));
+        reject(new Error("Telnet this.connection undefined"));
       }
     });
   }
@@ -91,11 +91,11 @@ export default class TelnetVPN extends EventEmitter {
   // Exit telnet terminal (Only closes telnet terminal)
   end() { // -> Promise
     return q.Promise((resolve, reject, notify) => {
-      if (connection) {
-        resolve(connection.end());
+      if (this.connection) {
+        resolve(this.connection.end());
       }
       else {
-        reject(new Error("Telnet connection undefined"));
+        reject(new Error("Telnet this.connection undefined"));
       }
     });
   }
@@ -104,14 +104,14 @@ export default class TelnetVPN extends EventEmitter {
   exec(param) { // -> Promise
     let vpn = this;
     return q.Promise((resolve, reject, notify) => {
-      if (connection) {
-        connection.send(param, (error) => {
+      if (this.connection) {
+        this.connection.send(param, (error) => {
           if (error) reject(error);
           resolve();
         });
       }
       else {
-        reject(vpn.emit('error', 'Error: Connection Not Established'));
+        reject(vpn.emit('error', 'Error: this.connection Not Established'));
       }
     });
   }
