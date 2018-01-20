@@ -11,28 +11,27 @@ import q from 'q';
 export default class TelnetVPN extends EventEmitter {
   constructor() {
     super();
-    let vpn = this;
     this.connection = new Telnet();
     // Telnet connected to management port
     this.connection.on('connect', () => {
-      vpn.emit('connect');
+      this.emit('connect');
     });
     // Sort and emit vpn console log
     this.connection.on('data', (response) => {
-      vpn._emitData(response.toString());
+      this._emitData(response.toString());
     });
     // Telnet error
     this.connection.on('error', (error) => {
-      vpn.disconnect();
-      vpn.emit('error', error);
+      this.disconnect();
+      this.emit('error', error);
     });
     // Ending telnet session
     this.connection.on('end', () => {
-      vpn.emit('end');
+      this.emit('end');
     });
     // Closing telnet session
     this.connection.on('close', () => {
-      vpn.emit('close');
+      this.emit('close');
     });
   }
   
@@ -52,10 +51,9 @@ export default class TelnetVPN extends EventEmitter {
   
   // Authenticate user credentials
   authorize(auth) { // -> Promise
-    let vpn = this;
     return q.Promise((resolve, reject, notify) => {
-      vpn.exec('username "Auth" ' + auth.username).then(() => {
-        vpn.exec('password "Auth" ' + auth.password).then(() => {
+      this.exec('username "Auth" ' + auth.username).then(() => {
+        this.exec('password "Auth" ' + auth.password).then(() => {
           resolve();
         });
       }).catch((error) => {
@@ -76,7 +74,7 @@ export default class TelnetVPN extends EventEmitter {
     });
   }
   
-  // Removes all instances of this.connection input/output
+  // Removes all instances of connection input/output
   destroy() { // -> Promise
     return q.Promise((resolve, reject, notify) => {
       if (this.connection) {
@@ -102,7 +100,6 @@ export default class TelnetVPN extends EventEmitter {
   
   // Telnet OpenVPN Execution Commands
   exec(param) { // -> Promise
-    let vpn = this;
     return q.Promise((resolve, reject, notify) => {
       if (this.connection) {
         this.connection.send(param, (error) => {
@@ -111,44 +108,43 @@ export default class TelnetVPN extends EventEmitter {
         });
       }
       else {
-        reject(vpn.emit('error', 'Error: connection Not Established'));
+        reject(this.emit('error', 'Error: connection Not Established'));
       }
     });
   }
   
   // Emit data from provided response string
   _emitData(response) {
-    let vpn = this;
     _.each(response.split("\n"), (response) => {
       if (response) {
         if (response.substr(1, 5) === 'STATE') {
-          vpn.emit('data', {state: response.substr(7).split(",")});
+          this.emit('data', {state: response.substr(7).split(",")});
         }
         else if (response.substr(1, 4) === 'HOLD') {
-          vpn.emit('data', {hold: true});
+          this.emit('data', {hold: true});
         }
         else if (response.substr(0, 7) === 'SUCCESS') {
           if (response.substr(9, 3) === 'pid') {
-            vpn.emit('data', {pid: response.substr(13).trim()});
+            this.emit('data', {pid: response.substr(13).trim()});
           }
           else {
-            vpn.emit('data', {success: response.substr(8)});
+            this.emit('data', {success: response.substr(8)});
           }
         }
         else if ((response.substr(0, 5) === 'FATAL') || (response && response.substr(0, 5) === 'ERROR')) {
-          vpn.emit('error', response);
+          this.emit('error', response);
         }
         else if (response.substr(1, 9) === 'BYTECOUNT') {
-          vpn.emit('data', {bytecount: response.substr(11).split(",")});
+          this.emit('data', {bytecount: response.substr(11).split(",")});
         }
         else if (response.substr(1, 8) === 'PASSWORD') {
-          vpn.emit('data', {password: response.substr(10).split(",")})
+          this.emit('data', {password: response.substr(10).split(",")})
         }
         else if (response.substr(1, 3) === 'LOG') {
-          vpn.emit('log', response.substr(4).split(',')[2]);
+          this.emit('log', response.substr(4).split(',')[2]);
         }
         else {
-          vpn.emit('log', response);
+          this.emit('log', response);
         }
       }
     });
