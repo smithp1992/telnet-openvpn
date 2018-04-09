@@ -10,7 +10,7 @@ $ npm install telnet-openvpn --save
 ## Usage  
 ### ECMAScript 5
 ```js
-var TelnetVPN = require('telnet-openvpn');
+var TelnetVPN = require('telnet-openvpn').default;
   
 var vpn = new TelnetVPN();
   
@@ -171,7 +171,13 @@ management-hold
 management-query-passwords
 # OpenVPN authenticate using username and password from telnet console.
 auth-user-pass
-```
+```  
+  
+Start OpenVPN through command line (requires [OpenVPN](https://openvpn.net/index.php/open-source/downloads.html))  :
+```bash
+$ openvpn myconfig.ovpn
+```  
+For more OpenVPN commands please follow [OpenVPN's documentation](https://openvpn.net/index.php/open-source/documentation/howto.html)
   
 ## Credits  
   [telnet-client](https://github.com/mkozjak/node-telnet-client)  
