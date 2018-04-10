@@ -4,8 +4,8 @@
   "description": "Connect to OpenVPN management port through telnet.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel src --out-dir dist",
-    "prepublish": "npm run build",
+    "prepare": "babel src --out-dir dist",
+    "prepublish": "npm run prepare",
     "test": "babel-node test.js"
   },
   "repository": {
