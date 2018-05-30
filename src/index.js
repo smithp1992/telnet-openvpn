@@ -115,36 +115,36 @@ export default class TelnetVPN extends EventEmitter {
   
   // Emit data from provided response string
   _emitData(response) {
-    _.each(response.split("\n"), (response) => {
-      if (response) {
-        if (response.substr(1, 5) === 'STATE') {
-          this.emit('data', {state: response.substr(7).split(",")});
+    _.each(response.split("\n"), (data) => {
+      if (data) {
+        if (data.substr(1, 5) === 'STATE') {
+          this.emit('data', {state: data.substr(7).split(",")});
         }
-        else if (response.substr(1, 4) === 'HOLD') {
+        else if (data.substr(1, 4) === 'HOLD') {
           this.emit('data', {hold: true});
         }
-        else if (response.substr(0, 7) === 'SUCCESS') {
-          if (response.substr(9, 3) === 'pid') {
-            this.emit('data', {pid: response.substr(13).trim()});
+        else if (data.substr(0, 7) === 'SUCCESS') {
+          if (data.substr(9, 3) === 'pid') {
+            this.emit('data', {pid: data.substr(13).trim()});
           }
           else {
-            this.emit('data', {success: response.substr(8)});
+            this.emit('data', {success: data.substr(8)});
           }
         }
-        else if ((response.substr(0, 5) === 'FATAL') || (response && response.substr(0, 5) === 'ERROR')) {
-          this.emit('error', response);
+        else if ((data.substr(0, 5) === 'FATAL') || (data && data.substr(0, 5) === 'ERROR')) {
+          this.emit('error', data);
         }
-        else if (response.substr(1, 9) === 'BYTECOUNT') {
-          this.emit('data', {bytecount: response.substr(11).split(",")});
+        else if (data.substr(1, 9) === 'BYTECOUNT') {
+          this.emit('data', {bytecount: data.substr(11).split(",")});
         }
-        else if (response.substr(1, 8) === 'PASSWORD') {
-          this.emit('data', {password: response.substr(10).split(",")})
+        else if (data.substr(1, 8) === 'PASSWORD') {
+          this.emit('data', {password: data.substr(10).split(",")})
         }
-        else if (response.substr(1, 3) === 'LOG') {
-          this.emit('log', response.substr(4).split(',')[2]);
+        else if (data.substr(1, 3) === 'LOG') {
+          this.emit('log', data.substr(4).split(',')[2]);
         }
         else {
-          this.emit('log', response);
+          this.emit('log', data);
         }
       }
     });

@@ -177,7 +177,8 @@ Start OpenVPN through command line (requires [OpenVPN](https://openvpn.net/index
 ```bash
 $ openvpn myconfig.ovpn
 ```  
-For more OpenVPN commands please follow [OpenVPN's documentation](https://openvpn.net/index.php/open-source/documentation/howto.html)
+For more OpenVPN management commands please follow 
+[OpenVPN's documentation](https://openvpn.net/index.php/open-source/documentation/miscellaneous/management-interface.html)  
   
 ## Credits  
   [telnet-client](https://github.com/mkozjak/node-telnet-client)  
