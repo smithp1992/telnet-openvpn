@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/smithp1992/telnet-openvpn#readme",
   "dependencies": {
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.10",
     "q": "^1.5.1",
     "telnet-client": "^0.15.5"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.7.0"
   },
   "babel": {
     "presets": [
