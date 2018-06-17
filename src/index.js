@@ -8,7 +8,7 @@ import EventEmitter from 'events';
 import _ from 'lodash';
 import q from 'q';
 
-export default class TelnetVPN extends EventEmitter {
+class TelnetVPN extends EventEmitter {
   constructor() {
     super();
     this.connection = new Telnet();
@@ -149,4 +149,6 @@ export default class TelnetVPN extends EventEmitter {
       }
     });
   }
-};
+}
+
+module.exports = TelnetVPN;
