@@ -1,2 +1,4 @@
 .idea/
 src/*.js
+package-lock.json
+test.js
