@@ -10,7 +10,7 @@ $ npm install telnet-openvpn --save
 ## Usage  
 ### ECMAScript 5
 ```js
-var TelnetVPN = require('telnet-openvpn').default;
+var TelnetVPN = require('telnet-openvpn');
   
 var vpn = new TelnetVPN();
   
