@@ -1,6 +1,6 @@
 {
   "name": "telnet-openvpn",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Connect to OpenVPN management port through telnet.",
   "main": "dist/index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   "dependencies": {
     "lodash": "^4.17.10",
     "q": "^1.5.1",
-    "telnet-client": "^0.15.5"
+    "telnet-client": "^0.15.8"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
