@@ -134,6 +134,9 @@ class TelnetVPN extends EventEmitter {
         else if ((data.substr(0, 5) === 'FATAL') || (data && data.substr(0, 5) === 'ERROR')) {
           this.emit('error', data);
         }
+        else if (data.substr(1, 13) === 'BYTECOUNT_CLI') {
+          this.emit('data', {bytecount_cli: data.substr(15).trim().split(",")});
+        }
         else if (data.substr(1, 9) === 'BYTECOUNT') {
           this.emit('data', {bytecount: data.substr(11).split(",")});
         }
