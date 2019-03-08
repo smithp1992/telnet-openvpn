@@ -148,6 +148,7 @@ events:
     * hold: Telnet console waiting for user commands.  
     * success: Telnet data successfully obtained.  
     * bytecount: Telnet byte count.  
+    * bytecount_cli: Per-client byte counts.  
     * password: Password information sent through telnet console.  
     * pid: Process id of session.  
   
